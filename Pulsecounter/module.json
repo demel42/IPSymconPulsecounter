@@ -1,0 +1,12 @@
+{
+	"id": "{2E598E2C-32FD-0407-3EE0-496B33854129}",
+	"name": "Pulsecounter",
+	"type": 3,
+	"vendor": "stall.biz",
+	"aliases": [],
+	"parentRequirements": ["{C8792760-65CF-4C53-B5C7-A30FCC84FEFE}"],
+	"childRequirements": [],
+	"implemented": ["{7A1272A4-CBDB-46EF-BFC6-DCF4A53D2FC7}"],
+	"prefix": "Pulsecounter",
+	"url": "https://github.com/demel42/IPSymconPulsecounter/blob/master/README.md"
+}
