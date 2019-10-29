@@ -4,6 +4,13 @@ declare(strict_types=1);
 
 require_once __DIR__ . '/../libs/common.php';  // globale Funktionen
 
+if (!defined('PULSECOUNTER_UNDEF')) {
+    define('PULSECOUNTER_UNDEF', -1);
+    define('PULSECOUNTER_ELECTRICITY', 0);
+    define('PULSECOUNTER_GAS', 1);
+    define('PULSECOUNTER_WATER', 2);
+}
+
 class Pulsecounter extends IPSModule
 {
     use PulsecounterCommon;
@@ -12,69 +19,18 @@ class Pulsecounter extends IPSModule
     {
         parent::Create();
 
-        $this->RegisterPropertyString('use_fields', '[]');
-
-        $this->RegisterPropertyBoolean('windspeed_in_kmh', false);
-
-        $this->RegisterPropertyInteger('altitude', false);
-        $this->RegisterPropertyBoolean('with_heatindex', false);
-        $this->RegisterPropertyBoolean('with_absolute_pressure', false);
-        $this->RegisterPropertyBoolean('with_windstrength_text', false);
-        $this->RegisterPropertyBoolean('with_precipitation_level', false);
-        $this->RegisterPropertyInteger('regensensor_niesel', 0);
+        $this->RegisterPropertyInteger('counter_1', PULSECOUNTER_UNDEF);
+        $this->RegisterPropertyInteger('counter_2', PULSECOUNTER_UNDEF);
+        $this->RegisterPropertyInteger('counter_3', PULSECOUNTER_UNDEF);
+        $this->RegisterPropertyInteger('counter_4', PULSECOUNTER_UNDEF);
 
         $this->CreateVarProfile('Pulsecounter.Wifi', VARIABLETYPE_INTEGER, ' dBm', 0, 0, 0, 0, 'Intensity');
-
         $this->CreateVarProfile('Pulsecounter.sec', VARIABLETYPE_INTEGER, ' s', 0, 0, 0, 0, 'Clock');
-        $this->CreateVarProfile('Pulsecounter.min', VARIABLETYPE_INTEGER, ' m', 0, 0, 0, 0, 'Clock');
-        $this->CreateVarProfile('Pulsecounter.hour', VARIABLETYPE_INTEGER, ' h', 0, 0, 0, 0, 'Clock');
 
-        $this->CreateVarProfile('Pulsecounter.Temperatur', VARIABLETYPE_FLOAT, ' °C', -10, 30, 0, 1, 'Temperature');
-        $this->CreateVarProfile('Pulsecounter.Humidity', VARIABLETYPE_FLOAT, ' %', 0, 0, 0, 0, 'Drops');
-        $this->CreateVarProfile('Pulsecounter.absHumidity', VARIABLETYPE_FLOAT, ' g/m³', 10, 100, 0, 0, 'Drops');
-        $this->CreateVarProfile('Pulsecounter.Pressure', VARIABLETYPE_FLOAT, ' mbar', 0, 0, 0, 0, 'Gauge');
-        $this->CreateVarProfile('Pulsecounter.Dewpoint', VARIABLETYPE_FLOAT, ' °C', 0, 30, 0, 0, 'Drops');
-        $this->CreateVarProfile('Pulsecounter.Windchill', VARIABLETYPE_FLOAT, ' °C', 0, 100, 0, 0, 'Temperature');
-        $this->CreateVarProfile('Pulsecounter.Pressure', VARIABLETYPE_FLOAT, ' mbar', 500, 1200, 0, 0, 'Gauge');
-        $this->CreateVarProfile('Pulsecounter.WindSpeed', VARIABLETYPE_FLOAT, ' km/h', 0, 100, 0, 0, 'WindSpeed'); // m/s
-        $this->CreateVarProfile('Pulsecounter.WindStrength', VARIABLETYPE_INTEGER, ' bft', 0, 13, 0, 0, 'WindSpeed');
-        $this->CreateVarProfile('Pulsecounter.WindAngle', VARIABLETYPE_INTEGER, ' °', 0, 360, 0, 0, 'WindDirection');
-        $this->CreateVarProfile('Pulsecounter.WindDirection', VARIABLETYPE_STRING, '', 0, 0, 0, 0, 'WindDirection');
-        $this->CreateVarProfile('Pulsecounter.Rainfall', VARIABLETYPE_FLOAT, ' mm', 0, 60, 0, 1, 'Rainfall');
-        $this->CreateVarProfile('Pulsecounter.Precipitation', VARIABLETYPE_FLOAT, ' mm/h', 0, 60, 0, 1, 'Rainfall');
-        $this->CreateVarProfile('Pulsecounter.Lux', VARIABLETYPE_FLOAT, ' lx', 0, 0, 0, 0, 'Sun');
-        $this->CreateVarProfile('Pulsecounter.Azimut', VARIABLETYPE_INTEGER, ' °', 0, 0, 0, 0, '');
-        $this->CreateVarProfile('Pulsecounter.Elevation', VARIABLETYPE_INTEGER, ' °', 0, 0, 0, 0, '');
-
-        $associations = [];
-        $associations[] = ['Wert' => false, 'Name' => $this->Translate('Off'), 'Farbe' => -1];
-        $associations[] = ['Wert' => true,  'Name' => $this->Translate('On'), 'Farbe' => 0xEE0000];
-        $this->CreateVarProfile('Pulsecounter.RainDetector', VARIABLETYPE_BOOLEAN, '', 0, 0, 0, 0, '', $associations);
-
-        $associations = [];
-        $associations[] = ['Wert' => false, 'Name' => $this->Translate('Off'), 'Farbe' => -1];
-        $associations[] = ['Wert' => true,  'Name' => $this->Translate('On'), 'Farbe' => 0xFFFF99];
-        $this->CreateVarProfile('Pulsecounter.SunDetector', VARIABLETYPE_BOOLEAN, '', 0, 0, 0, 0, '', $associations);
-
-        $associations = [];
-        $associations[] = ['Wert' =>  0, 'Name' => '%.1f', 'Farbe' => 0x80FF00];
-        $associations[] = ['Wert' =>  3, 'Name' => '%.1f', 'Farbe' => 0xFFFF00];
-        $associations[] = ['Wert' =>  6, 'Name' => '%.1f', 'Farbe' => 0xFF8040];
-        $associations[] = ['Wert' =>  8, 'Name' => '%.1f', 'Farbe' => 0xFF0000];
-        $associations[] = ['Wert' => 11, 'Name' => '%.1f', 'Farbe' => 0xFF00FF];
-        $this->CreateVarProfile('Pulsecounter.UV-Index', VARIABLETYPE_FLOAT, '', 0, 12, 0, 1, 'Sun', $associations);
-
-        $associations = [];
-        $associations[] = ['Wert' =>  0, 'Name' => $this->Translate('dry'), 'Farbe' => -1];
-        $associations[] = ['Wert' =>  1, 'Name' => $this->Translate('drizzle'), 'Farbe' => -1];
-        $associations[] = ['Wert' =>  2, 'Name' => $this->Translate('mist'), 'Farbe' => -1];
-        $associations[] = ['Wert' =>  3, 'Name' => $this->Translate('light rain'), 'Farbe' => -1];
-        $associations[] = ['Wert' =>  4, 'Name' => $this->Translate('moderate rain'), 'Farbe' => -1];
-        $associations[] = ['Wert' =>  5, 'Name' => $this->Translate('heavy rain'), 'Farbe' => -1];
-        $associations[] = ['Wert' =>  6, 'Name' => $this->Translate('showers'), 'Farbe' => -1];
-        $associations[] = ['Wert' =>  7, 'Name' => $this->Translate('rain storm'), 'Farbe' => -1];
-        $associations[] = ['Wert' =>  8, 'Name' => $this->Translate('downpour'), 'Farbe' => -1];
-        $this->CreateVarProfile('Pulsecounter.PrecipitationLevel', VARIABLETYPE_INTEGER, '', 0, 8, 0, 1, 'Rainfall', $associations);
+        $this->CreateVarProfile('Pulsecounter.KWh', VARIABLETYPE_FLOAT, ' KWh', 0, 0, 0, 1, '');
+        $this->CreateVarProfile('Pulsecounter.KW', VARIABLETYPE_FLOAT, ' KW', 0, 0, 0, 1, '');
+        $this->CreateVarProfile('Pulsecounter.m3', VARIABLETYPE_FLOAT, ' m3', 0, 0, 0, 1, '');
+        $this->CreateVarProfile('Pulsecounter.m3_h', VARIABLETYPE_FLOAT, ' m3/h', 0, 0, 0, 1, '');
 
         $this->RequireParent('{8062CF2B-600E-41D6-AD4B-1BA66C32D6ED}');
     }
@@ -86,79 +42,56 @@ class Pulsecounter extends IPSModule
         $status = IS_ACTIVE;
 
         $vpos = 1;
-        $identList = [];
-        $use_fields = json_decode($this->ReadPropertyString('use_fields'), true);
-        $fieldMap = $this->getFieldMap();
-        foreach ($fieldMap as $map) {
-            $ident = $this->GetArrayElem($map, 'ident', '');
-            $use = false;
-            foreach ($use_fields as $field) {
-                if ($ident == $this->GetArrayElem($field, 'ident', '')) {
-                    $use = (bool) $this->GetArrayElem($field, 'use', false);
+
+        for ($i = 1; $i <= 4; $i++) {
+            $ident_a = 'w_counter_' . $i;
+            $ident_b = 'w_power_' . $i;
+
+            $desc_a = '';
+            $desc_b = '';
+
+            $prof_a = '';
+            $prof_b = '';
+
+            $use_a = false;
+            $use_b = false;
+
+            $type = $this->ReadPropertyInteger('counter_' . $i);
+            switch ($type) {
+                case PULSECOUNTER_ELECTRICITY:
+                    $desc_a = 'Electric meter';
+                    $prof_a = 'Pulsecounter.KWh';
+                    $use_a = true;
+
+                    $desc_b = 'Electricity usage';
+                    $prof_b = 'Pulsecounter.KW';
+                    $use_b = true;
                     break;
-                }
+                case PULSECOUNTER_GAS:
+                    $desc_a = 'Gas meter';
+                    $prof_a = 'Pulsecounter.m3';
+                    $use_a = true;
+
+                    $desc_b = 'Gas consumption';
+                    $prof_b = 'Pulsecounter.KW';
+                    $use_b = true;
+                    break;
+                case PULSECOUNTER_WATER:
+                    $use = true;
+                    $desc_a = 'Water meter';
+                    $prof_a = 'Pulsecounter.m3';
+                    $use_a = true;
+
+                    $desc_b = 'Water consumption';
+                    $prof_b = 'Pulsecounter.m3_h';
+                    $use_b = true;
+                    break;
+                default:
+                    break;
             }
-            if ($use) {
-                $identList[] = $ident;
-            }
-            $desc = $this->GetArrayElem($map, 'desc', '');
-            $vartype = $this->GetArrayElem($map, 'type', '');
-            $varprof = $this->GetArrayElem($map, 'prof', '');
-            $this->SendDebug(__FUNCTION__, 'register variable: ident=' . $ident . ', vartype=' . $vartype . ', varprof=' . $varprof . ', use=' . $this->bool2str($use), 0);
-            $this->MaintainVariable($ident, $this->Translate($desc), $vartype, $varprof, $vpos++, $use);
+            $this->MaintainVariable($ident_a, $this->Translate($desc_a), VARIABLETYPE_FLOAT, $prof_a, $vpos++, $use_a);
+            $this->MaintainVariable($ident_b, $this->Translate($desc_b), VARIABLETYPE_FLOAT, $prof_b, $vpos++, $use_b);
         }
-
-        $vpos = 80;
-
-        $with_heatindex = $this->ReadPropertyBoolean('with_heatindex');
-        if ($with_heatindex) {
-            if (!(in_array('w_temperatur', $identList) && in_array('w_feuchte_rel', $identList))) {
-                $this->SendDebug(__FUNCTION__, '"with_heatindex" needs "w_temperatur", "w_feuchte_rel"', 0);
-                $with_heatindex = false;
-                $status = IS_INVALIDCONFIG;
-            }
-        }
-        $this->MaintainVariable('Heatindex', $this->Translate('Heatindex'), VARIABLETYPE_FLOAT, 'Pulsecounter.Heatindex', $vpos++, $with_heatindex);
-
-        $with_absolute_pressure = $this->ReadPropertyBoolean('with_absolute_pressure');
-        if ($with_absolute_pressure) {
-            $altitude = $this->ReadPropertyInteger('altitude');
-            if (!(in_array('w_barometer', $identList) && in_array('w_temperatur', $identList) && $altitude > 0)) {
-                $this->SendDebug(__FUNCTION__, '"with_absolute_pressure" needs "w_barometer", "w_temperatur" and "altitude"', 0);
-                $with_absolute_pressure = false;
-                $status = IS_INVALIDCONFIG;
-            }
-        }
-        $this->MaintainVariable('AbsolutePressure', $this->Translate('Absolute pressure'), VARIABLETYPE_FLOAT, 'Pulsecounter.Pressure', $vpos++, $with_absolute_pressure);
-
-        $with_windstrength_text = $this->ReadPropertyBoolean('with_windstrength_text');
-        if ($with_windstrength_text) {
-            if (!(in_array('w_windstaerke', $identList))) {
-                $this->SendDebug(__FUNCTION__, '"with_windstrength_text" needs "w_windstaerke"', 0);
-                $with_windstrength_text = false;
-                $status = IS_INVALIDCONFIG;
-            }
-        }
-        $this->MaintainVariable('WindStrengthText', $this->Translate('Windstrength'), VARIABLETYPE_STRING, '', $vpos++, $with_windstrength_text);
-
-        $with_precipitation_level = $this->ReadPropertyBoolean('with_precipitation_level');
-        if ($with_precipitation_level) {
-            if (!(in_array('w_regen_letzte_h', $identList))) {
-                $this->SendDebug(__FUNCTION__, '"with_precipitation_level" needs "w_regen_letzte_h"', 0);
-                $with_precipitation_level = false;
-                $status = IS_INVALIDCONFIG;
-            }
-            $regensensor_niesel = $this->ReadPropertyInteger('regensensor_niesel');
-            if ($regensensor_niesel > 0) {
-                if (!(in_array('w_regensensor_wert', $identList))) {
-                    $this->SendDebug(__FUNCTION__, '"regensensor_niesel" needs "w_regensensor_wert"', 0);
-                    $regensensor_niesel = 0;
-                    $status = IS_INVALIDCONFIG;
-                }
-            }
-        }
-
-        $this->MaintainVariable('PrecipitationLevel', $this->Translate('Precipitation level'), VARIABLETYPE_INTEGER, 'Pulsecounter.PrecipitationLevel', $vpos++, $with_precipitation_level);
 
         $vpos = 100;
 
@@ -166,11 +99,6 @@ class Pulsecounter extends IPSModule
         $this->MaintainVariable('LastUpdate', $this->Translate('Last update'), VARIABLETYPE_INTEGER, '~UnixTimestamp', $vpos++, true);
         $this->MaintainVariable('Uptime', $this->Translate('Uptime'), VARIABLETYPE_INTEGER, 'Pulsecounter.sec', $vpos++, true);
         $this->MaintainVariable('WifiStrength', $this->Translate('wifi-signal'), VARIABLETYPE_INTEGER, 'Pulsecounter.Wifi', $vpos++, true);
-
-        $windspeed_in_kmh = $this->ReadPropertyBoolean('windspeed_in_kmh');
-        if (IPS_VariableProfileExists('Pulsecounter.WindSpeed')) {
-            IPS_SetVariableProfileText('Pulsecounter.WindSpeed', '', ($windspeed_in_kmh ? ' km/h' : ' m/s'));
-        }
 
         $this->SetStatus($status);
     }
@@ -196,105 +124,36 @@ class Pulsecounter extends IPSModule
         $formElements = [];
         $formElements[] = ['type' => 'Label', 'label' => 'Pulsecounter'];
 
-        $values = [];
-        $fieldMap = $this->getFieldMap();
-        foreach ($fieldMap as $map) {
-            $ident = $this->GetArrayElem($map, 'ident', '');
-            $desc = $this->GetArrayElem($map, 'desc', '');
-            $values[] = ['ident' => $ident, 'desc' => $this->Translate($desc)];
-        }
+        $opts = [];
+        $opts[] = ['caption' => $this->Translate('unused'), 'value'   => PULSECOUNTER_UNDEF];
+        $opts[] = ['caption' => $this->Translate('Electricity'), 'value'   => PULSECOUNTER_ELECTRICITY];
+        $opts[] = ['caption' => $this->Translate('Gas'), 'value'   => PULSECOUNTER_GAS];
+        $opts[] = ['caption' => $this->Translate('Water'), 'value'   => PULSECOUNTER_WATER];
 
-        $columns = [];
-        $columns[] = [
-            'caption' => 'Name',
-            'name'    => 'ident',
-            'width'   => '200px',
-            'save'    => true
+        $formElements[] = [
+            'type'    => 'Select',
+            'name'    => 'counter_1',
+            'caption' => 'Counter 1',
+            'options' => $opts
         ];
-        $columns[] = [
-            'caption' => 'Description',
-            'name'    => 'desc',
-            'width'   => 'auto'
+        $formElements[] = [
+            'type'    => 'Select',
+            'name'    => 'counter_2',
+            'caption' => 'Counter 2',
+            'options' => $opts
         ];
-        $columns[] = [
-            'caption' => 'use',
-            'name'    => 'use',
-            'width'   => '100px',
-            'edit'    => [
-                'type' => 'CheckBox'
-            ]
+        $formElements[] = [
+            'type'    => 'Select',
+            'name'    => 'counter_3',
+            'caption' => 'Counter 3',
+            'options' => $opts
         ];
-
-        $items = [];
-
-        $items[] = [
-            'type'     => 'List',
-            'name'     => 'use_fields',
-            'caption'  => 'available variables',
-            'rowCount' => count($values),
-            'add'      => false,
-            'delete'   => false,
-            'columns'  => $columns,
-            'values'   => $values
+        $formElements[] = [
+            'type'    => 'Select',
+            'name'    => 'counter_4',
+            'caption' => 'Counter 4',
+            'options' => $opts
         ];
-
-        $formElements[] = ['type' => 'ExpansionPanel', 'items' => $items, 'caption' => 'Variables'];
-
-        $items = [];
-
-        $items[] = [
-            'type'    => 'CheckBox',
-            'name'    => 'windspeed_in_kmh',
-            'caption' => 'Windspeed in km/h instead of m/s'
-        ];
-
-        $items[] = [
-            'type'    => 'NumberSpinner',
-            'name'    => 'altitude',
-            'caption' => 'Station altitude'
-        ];
-
-        $items[] = [
-            'type'    => 'Label',
-            'caption' => 'additional Calculations'
-        ];
-
-        $items[] = [
-            'type'    => 'CheckBox',
-            'name'    => 'with_heatindex',
-            'caption' => ' ... Heatindex (needs "w_temperatur", "w_feuchte_rel")'
-        ];
-
-        $items[] = [
-            'type'    => 'CheckBox',
-            'name'    => 'with_absolute_pressure',
-            'caption' => ' ... absolute pressure (needs "w_barometer", "w_temperatur" and the altitude)'
-        ];
-
-        $items[] = [
-            'type'    => 'CheckBox',
-            'name'    => 'with_windstrength_text',
-            'caption' => ' ... Windstrength as text (needs "w_windstaerke")'
-        ];
-
-        $items[] = [
-            'type'    => 'CheckBox',
-            'name'    => 'with_precipitation_level',
-            'caption' => ' ... Precipitation level (needs "w_regen_letzte_h")'
-        ];
-        $items[] = [
-            'type'    => 'Label',
-            'caption' => ' ... use rainsensor to detect drizzle (needs "w_regensensor_wert")',
-        ];
-        $items[] = [
-            'type'    => 'NumberSpinner',
-            'name'    => 'regensensor_niesel',
-            'caption' => 'minumum rainsensor-value',
-            'minumum' => 0,
-            'maximum' => 100,
-        ];
-
-        $formElements[] = ['type' => 'ExpansionPanel', 'items' => $items, 'caption' => 'Options'];
 
         return $formElements;
     }
@@ -360,399 +219,32 @@ class Pulsecounter extends IPSModule
 
         $this->SendDebug(__FUNCTION__, 'modultyp=' . $modultyp . ', measure=' . date('d.m.Y H:i:s', $tstamp) . ', rssi=' . $rssi . ', uptime=' . $uptime . 's', 0);
 
-        $windspeed_in_kmh = $this->ReadPropertyBoolean('windspeed_in_kmh');
-
-        $fieldMap = $this->getFieldMap();
-        $use_fields = json_decode($this->ReadPropertyString('use_fields'), true);
         $vars = $this->GetArrayElem($jdata, 'vars', '');
+        $this->SendDebug(__FUNCTION__, 'vars=' . print_r($vars, true), 0);
         foreach ($vars as $var) {
             $ident = $this->GetArrayElem($var, 'homematic_name', '');
             $value = $this->GetArrayElem($var, 'value', '');
+            $this->SendDebug(__FUNCTION__, 'ident=' . $ident . ', value=' . $value, 0);
 
-            $found = false;
+            for ($i = 1; $i <= 4; $i++) {
+                $ident_a = 'w_counter_' . $i;
+                $ident_b = 'w_power_' . $i;
 
-            $vartype = VARIABLETYPE_STRING;
-            $varprof = '';
-            foreach ($fieldMap as $map) {
-                if ($ident == $this->GetArrayElem($map, 'ident', '')) {
-                    $found = true;
-
-                    $vartype = $this->GetArrayElem($map, 'type', '');
-                    $varprof = $this->GetArrayElem($map, 'prof', '');
-                    break;
+                $type = $this->ReadPropertyInteger('counter_' . $i);
+                if ($type == PULSECOUNTER_UNDEF) {
+                    continue;
                 }
-            }
 
-            if (!$found) {
-                $this->SendDebug(__FUNCTION__, '.. unknown ident ' . $ident . ', value=' . $value, 0);
-                $this->LogMessage(__FUNCTION__ . ': unknown ident ' . $ident . ', value=' . $value, KL_NOTIFY);
-                continue;
-            }
-
-            foreach ($use_fields as $field) {
-                if ($ident == $this->GetArrayElem($field, 'ident', '')) {
-                    $use = (bool) $this->GetArrayElem($field, 'use', false);
-                    if (!$use) {
-                        $this->SendDebug(__FUNCTION__, '.. ignore ident ' . $ident . ', value=' . $value, 0);
-                        continue;
-                    }
-
-                    if ($varprof == 'Pulsecounter.WindSpeed' && $windspeed_in_kmh) {
-                        $value = floatval($value) * 3.6;
-                    }
-
-                    if ($ident == 'w_barotrend') {
-                        $value = str_replace('_', ' ', $value);
-                    }
-
-                    switch ($vartype) {
-                        case VARIABLETYPE_INTEGER:
-                            $this->SetValue($ident, intval($value));
-                            break;
-                        default:
-                            $this->SetValue($ident, $value);
-                            break;
-                    }
-                    break;
-                }
-            }
-        }
-
-        $with_heatindex = $this->ReadPropertyBoolean('with_heatindex');
-        if ($with_heatindex) {
-            $w_temperatur = $this->GetValue('w_temperatur');
-            $w_feuchte_rel = $this->GetValue('w_feuchte_rel');
-            $v = $this->calcHeatindex($w_temperatur, $w_feuchte_rel);
-            $this->SetValue('Heatindex', $v);
-        }
-
-        $with_absolute_pressure = $this->ReadPropertyBoolean('with_absolute_pressure');
-        if ($with_absolute_pressure) {
-            $w_barometer = $this->GetValue('w_barometer');
-            $w_temperatur = $this->GetValue('w_temperatur');
-            $altitude = $this->ReadPropertyInteger('altitude');
-            $v = $this->calcAbsolutePressure($w_barometer, $w_temperatur, $altitude);
-            $this->SetValue('AbsolutePressure', $v);
-        }
-
-        $with_windstrength_text = $this->ReadPropertyBoolean('with_windstrength_text');
-        if ($with_windstrength_text) {
-            $w_windstaerke = $this->GetValue('w_windstaerke');
-            $v = $this->convertWindStrength2Text($w_windstaerke);
-            $this->SetValue('WindStrengthText', $v);
-        }
-
-        $with_precipitation_level = $this->ReadPropertyBoolean('with_precipitation_level');
-        if ($with_precipitation_level) {
-            $w_regen_letzte_h = $this->GetValue('w_regen_letzte_h');
-            $v = $this->convertPrecipitation2Level($w_regen_letzte_h);
-            if ($v == 0) {
-                $regensensor_niesel = $this->ReadPropertyInteger('regensensor_niesel');
-                if ($regensensor_niesel > 0) {
-                    $w_regensensor_wert = $this->GetValue('w_regensensor_wert');
-                    if ($w_regensensor_wert > $regensensor_niesel) {
-                        $v = 1; // Nieselregen
+                if (in_array($ident, [$ident_a, $ident_b])) {
+                    if (in_array($value, ['', 'inf', 'nan'])) {
+                        $this->SendDebug(__FUNCTION__, 'ident=' . $ident . ', value=' . $value . ' => ignore', 0);
+                    } else {
+                        $this->SetValue($ident, $value);
                     }
                 }
             }
-            $this->SetValue('PrecipitationLevel', $v);
         }
 
         $this->SetValue('LastUpdate', time());
-    }
-
-    private function getFieldMap()
-    {
-        $map = [
-            [
-                'ident'  => 'w_ip',
-                'desc'   => 'IP-address',
-                'type'   => VARIABLETYPE_STRING,
-            ],
-            [
-                'ident'  => 'w_temperatur',
-                'desc'   => 'Shadow temperature',
-                'type'   => VARIABLETYPE_FLOAT,
-                'prof'   => 'Pulsecounter.Temperatur',
-            ],
-            [
-                'ident'  => 'w_windchill',
-                'desc'   => 'Windchill',
-                'type'   => VARIABLETYPE_FLOAT,
-                'prof'   => 'Pulsecounter.Windchill',
-            ],
-            [
-                'ident'  => 'w_taupunkt',
-                'desc'   => 'Dewpoint',
-                'type'   => VARIABLETYPE_FLOAT,
-                'prof'   => 'Pulsecounter.Dewpoint',
-            ],
-            [
-                'ident'  => 'w_himmeltemperatur',
-                'desc'   => 'Sky temperatur',
-                'type'   => VARIABLETYPE_FLOAT,
-                'prof'   => 'Pulsecounter.Temperatur',
-            ],
-            [
-                'ident'  => 'w_feuchte_rel',
-                'desc'   => 'Humidity',
-                'type'   => VARIABLETYPE_FLOAT,
-                'prof'   => 'Pulsecounter.Humidity',
-            ],
-            [
-                'ident'  => 'w_feuchte_abs',
-                'desc'   => 'Absolute humidity',
-                'type'   => VARIABLETYPE_FLOAT,
-                'prof'   => 'Pulsecounter.absHumidity',
-            ],
-            [
-                'ident'  => 'w_regensensor_wert',
-                'desc'   => 'Rain sensor',
-                'type'   => VARIABLETYPE_INTEGER,
-            ],
-            [
-                'ident'  => 'w_regenmelder',
-                'desc'   => 'Rain detector',
-                'type'   => VARIABLETYPE_BOOLEAN,
-                'prof'   => 'Pulsecounter.RainDetector',
-            ],
-            [
-                'ident'  => 'w_regenstaerke',
-                'desc'   => 'Precipitation',
-                'type'   => VARIABLETYPE_FLOAT,
-                'prof'   => 'Pulsecounter.Precipitation',
-            ],
-            [
-                'ident'  => 'w_regen_letzte_h',
-                'desc'   => 'Rainfall of last hour',
-                'type'   => VARIABLETYPE_FLOAT,
-                'prof'   => 'Pulsecounter.Rainfall',
-            ],
-            [
-                'ident'  => 'w_regen_mm_heute',
-                'desc'   => 'Rainfall of today',
-                'type'   => VARIABLETYPE_FLOAT,
-                'prof'   => 'Pulsecounter.Rainfall',
-            ],
-            [
-                'ident'  => 'w_regenstunden_heute',
-                'desc'   => 'Hours of rain today',
-                'type'   => VARIABLETYPE_INTEGER,
-                'prof'   => 'Pulsecounter.hour',
-            ],
-            [
-                'ident'  => 'w_regen_mm_gestern',
-                'desc'   => 'Rainfall of yesterday',
-                'type'   => VARIABLETYPE_FLOAT,
-                'prof'   => 'Pulsecounter.Rainfall',
-            ],
-            [
-                'ident'  => 'w_barometer',
-                'desc'   => 'Air pressure',
-                'type'   => VARIABLETYPE_FLOAT,
-                'prof'   => 'Pulsecounter.Pressure',
-            ],
-            [
-                'ident'  => 'w_barotrend',
-                'desc'   => 'Trend of air pressure',
-                'type'   => VARIABLETYPE_STRING,
-            ],
-            [
-                'ident'  => 'w_wind_mittel',
-                'desc'   => 'Windspeed',
-                'type'   => VARIABLETYPE_FLOAT,
-                'prof'   => 'Pulsecounter.WindSpeed',
-            ],
-            [
-                'ident'  => 'w_wind_spitze',
-                'desc'   => 'Speed of gusts of last 10m',
-                'type'   => VARIABLETYPE_FLOAT,
-                'prof'   => 'Pulsecounter.WindSpeed',
-            ],
-            [
-                'ident'  => 'w_windstaerke',
-                'desc'   => 'Windstrength',
-                'type'   => VARIABLETYPE_INTEGER,
-                'prof'   => 'Pulsecounter.WindStrength',
-            ],
-            [
-                'ident'  => 'w_windrichtung',
-                'desc'   => 'Winddirection',
-                'type'   => VARIABLETYPE_STRING,
-                'prof'   => 'Pulsecounter.WindDirection',
-            ],
-            [
-                'ident'  => 'w_wind_dir',
-                'desc'   => 'Winddirection',
-                'type'   => VARIABLETYPE_INTEGER,
-                'prof'   => 'Pulsecounter.WindAngle',
-            ],
-            [
-                'ident'  => 'w_lux',
-                'desc'   => 'Brightness',
-                'type'   => VARIABLETYPE_FLOAT,
-                'prof'   => 'Pulsecounter.Lux',
-            ],
-            [
-                'ident'  => 'w_uv_index',
-                'desc'   => 'UV-Index',
-                'type'   => VARIABLETYPE_FLOAT,
-                'prof'   => 'Pulsecounter.UV-Index',
-            ],
-            [
-                'ident'  => 'w_sonne_diff_temp',
-                'desc'   => 'Difference between sun and shadow temperature',
-                'type'   => VARIABLETYPE_FLOAT,
-                'prof'   => 'Pulsecounter.Temperatur',
-            ],
-            [
-                'ident'  => 'w_sonnentemperatur',
-                'desc'   => 'Sun temperatur',
-                'type'   => VARIABLETYPE_FLOAT,
-                'prof'   => 'Pulsecounter.Temperatur',
-            ],
-            [
-                'ident'  => 'w_sonne_scheint',
-                'desc'   => 'Sun detector',
-                'type'   => VARIABLETYPE_BOOLEAN,
-                'prof'   => 'Pulsecounter.SunDetector',
-            ],
-            [
-                'ident'  => 'w_sonnenstunden_heute',
-                'desc'   => 'Hours of sunshine today',
-                'type'   => VARIABLETYPE_INTEGER,
-                'prof'   => 'Pulsecounter.hour',
-            ],
-            [
-                'ident'  => 'w_elevation',
-                'desc'   => 'Sun elevation',
-                'type'   => VARIABLETYPE_INTEGER,
-                'prof'   => 'Pulsecounter.Elevation',
-            ],
-            [
-                'ident'  => 'w_azimut',
-                'desc'   => 'Sun azimut',
-                'type'   => VARIABLETYPE_INTEGER,
-                'prof'   => 'Pulsecounter.Azimut',
-            ],
-            [
-                'ident'  => 'w_minuten_vor_sa',
-                'desc'   => 'Minutes from sunrise',
-                'type'   => VARIABLETYPE_INTEGER,
-                'prof'   => 'Pulsecounter.min',
-            ],
-            [
-                'ident'  => 'w_minuten_vor_su',
-                'desc'   => 'Minutes from sunset',
-                'type'   => VARIABLETYPE_INTEGER,
-                'prof'   => 'Pulsecounter.min',
-            ],
-        ];
-
-        return $map;
-    }
-
-    // Luftdruck (Meereshöhe) in absoluten (lokaler) Luftdruck umrechnen
-    //   Quelle: https://rechneronline.de/barometer/hoehe.php
-    private function calcAbsolutePressure(float $pressure, float $temp, int $altitude)
-    {
-        // Temperaturgradient (geschätzt)
-        $TG = 0.0065;
-
-        // Höhe = Differenz Meereshöhe zu Standort
-        $ad = $altitude * -1;
-
-        // Temperatur auf Meereshöhe herunter rechnen
-        //     Schätzung: Temperatur auf Meereshöhe = Temperatur + Temperaturgradient * Höhe
-        $T = $temp + $TG * $ad;
-        // Temperatur in Kelvin
-        $TK = $T + 273.15;
-
-        // Luftdruck auf Meereshöhe = Barometeranzeige / (1-Temperaturgradient*Höhe/Temperatur auf Meereshöhe in Kelvin)^(0,03416/Temperaturgradient)
-        $AP = $pressure / pow((1 - $TG * $ad / $TK), (0.03416 / $TG));
-
-        return $AP;
-    }
-
-    // Windstärke als Text ausgeben
-    //  Quelle: https://de.wikipedia.org/wiki/Beaufortskala
-    private function convertWindStrength2Text(int $bft)
-    {
-        $bft2txt = [
-            'Calm',
-            'Light air',
-            'Light breeze',
-            'Gentle breeze',
-            'Moderate breeze',
-            'Fresh breeze',
-            'Strong breeze',
-            'High wind',
-            'Gale',
-            'Strong gale',
-            'Storm',
-            'Hurricane force',
-            'Violent storm'
-        ];
-
-        if ($bft >= 0 && $bft < count($bft2txt)) {
-            $txt = $this->Translate($bft2txt[$bft]);
-        } else {
-            $txt = '';
-        }
-        return $txt;
-    }
-
-    // Temperatur als Heatindex umrechnen
-    //   Quelle: https://de.wikipedia.org/wiki/Hitzeindex
-    private function calcHeatindex(float $temp, float $hum)
-    {
-        if ($temp < 27 || $hum < 40) {
-            return $temp;
-        }
-        $c1 = -8.784695;
-        $c2 = 1.61139411;
-        $c3 = 2.338549;
-        $c4 = -0.14611605;
-        $c5 = -1.2308094 * pow(10, -2);
-        $c6 = -1.6424828 * pow(10, -2);
-        $c7 = 2.211732 * pow(10, -3);
-        $c8 = 7.2546 * pow(10, -4);
-        $c9 = -3.582 * pow(10, -6);
-
-        $hi = $c1
-            + $c2 * $temp
-            + $c3 * $hum
-            + $c4 * $temp * $hum
-            + $c5 * pow($temp, 2)
-            + $c6 * pow($hum, 2)
-            + $c7 * pow($temp, 2) * $hum
-            + $c8 * $temp * pow($hum, 2)
-            + $c9 * pow($temp, 2) * pow($hum, 2);
-        $hi = round($hi); // ohne NK
-        return $hi;
-    }
-
-    private function convertPrecipitation2Level(float $rain_1h)
-    {
-        $rain_map = [
-            0 => 0,		// trocken
-            1 => 0.01,	// Nieselregen
-            2 => 0.1,	// Sprühregen
-            3 => 0.4,	// leichter Regen
-            4 => 1.5,	// mäßiger Regen
-            5 => 4,		// starker Regen
-            6 => 10,	// Schauerregen
-            7 => 35,	// Gewitterregen
-            8 => 100,	// Sturzregen
-        ];
-
-        $precipitation = 0;
-        for ($i = count($rain_map) - 1; $i >= 0; $i--) {
-            if ($rain_1h >= $rain_map[$i]) {
-                $precipitation = $i;
-                break;
-            }
-        }
-        return $precipitation;
     }
 }
