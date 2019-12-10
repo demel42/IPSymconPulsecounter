@@ -236,7 +236,7 @@ class Pulsecounter extends IPSModule
                 }
 
                 if (in_array($ident, [$ident_a, $ident_b])) {
-                    if (in_array($value, ['', 'inf', 'nan'])) {
+                    if (in_array((string) $value, ['', 'inf', 'nan'])) {
                         $this->SendDebug(__FUNCTION__, 'ident=' . $ident . ', value=' . $value . ' => ignore', 0);
                     } else {
                         $this->SetValue($ident, $value);
