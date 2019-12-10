@@ -85,8 +85,9 @@ http://<ip des Pulsecounter>/?ccu:<ip von IPS>:
 ```
 http://<ip des Pulsecounter>/?param:12:<port von IPS>:
 ```
-
 damit schickt der Pulsecounter zyklisch die Daten.
+
+Gemäß der Dokumentation sind die 4 Zähler im Pulsecounter zu konfigurieren (_Modus_ und _Impuls/Einheit_) sowie ggfs der aktuelle Wert des Zählers einzustellen.
 
 ## 4. Funktionsreferenz
 
@@ -96,18 +97,29 @@ damit schickt der Pulsecounter zyklisch die Daten.
 
 | Eigenschaft                           | Typ      | Standardwert | Beschreibung |
 | :------------------------------------ | :------  | :----------- | :----------- |
-|                                       |          |              | |
+| Zähler 1                              | integer  | -1           | Typ des 1. Zählers |
+| Zähler 2                              | integer  | -1           | Typ des 2. Zählers |
+| Zähler 3                              | integer  | -1           | Typ des 3. Zählers |
+| Zähler 4                              | integer  | -1           | Typ des 4. Zählers |
+
+| Typ          | Wert |
+| :----------- | :--- |
+| undefiniert  | -1 |
+| Elektrizität | 0 |
+| Gas          | 1 |
+| Wasser       | 2 |
+
+In Abhängigkeit von dem ṮTyp_ werden jeweils 2 Variablen angelegt mit dem entsprechenden Datentyp, jeweils ein Zähler und eine Angabe der aktuellen Leistung/Verbrauch.
+Falls man die Werte archivieren möchte, ist der Zähler sinnvollerweise auf _Aggregation_ _Zähler_ einzustellen.
 
 #### Variablenprofile
 
 Es werden folgende Variablenprofile angelegt:
-* Boolean<br>
-
 * Integer<br>
+Pulsecounter.Wifi, Pulsecounter.sec
 
 * Float<br>
-
-* String<br>
+Pulsecounter.KWh, Pulsecounter.KW, Pulsecounter.m3, Pulsecounter.m3_h
 
 ## 6. Anhang
 
