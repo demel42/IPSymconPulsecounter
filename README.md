@@ -110,7 +110,7 @@ Gemäß der Dokumentation sind die 4 Zähler im Pulsecounter zu konfigurieren (_
 | Wasser       | 2 |
 
 In Abhängigkeit von dem ṮTyp_ werden jeweils 2 Variablen angelegt mit dem entsprechenden Datentyp, jeweils ein Zähler und eine Angabe der aktuellen Leistung/Verbrauch.
-Falls man die Werte archivieren möchte, ist der Zähler sinnvollerweise auf _Aggregation_ _Zähler_ einzustellen.
+Falls man die Werte archivieren möchte, ist sinnvollerweise die _Aggregation_ auf _Zähler_ einzustellen.
 
 #### Variablenprofile
 
