@@ -132,6 +132,7 @@ GUIDs
 
 - 1.1 @ 15.12.2019 11:53<br>
   - ReceiveData() umgebaut
+  - mehr debug
 
 - 1.0 @ 10.12.2019 09:53<br>
   Initiale Version

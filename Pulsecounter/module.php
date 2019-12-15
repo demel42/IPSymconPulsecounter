@@ -240,8 +240,9 @@ class Pulsecounter extends IPSModule
         foreach ($vars as $var) {
             $ident = $this->GetArrayElem($var, 'homematic_name', '');
             $value = $this->GetArrayElem($var, 'value', '');
-            $this->SendDebug(__FUNCTION__, 'ident=' . $ident . ', value=' . $value, 0);
 
+            $found = false;
+            $skip = false;
             for ($i = 1; $i <= 4; $i++) {
                 $ident_a = 'w_counter_' . $i;
                 $ident_b = 'w_power_' . $i;
@@ -253,11 +254,22 @@ class Pulsecounter extends IPSModule
 
                 if (in_array($ident, [$ident_a, $ident_b])) {
                     if (in_array((string) $value, ['', 'inf', 'nan'])) {
-                        $this->SendDebug(__FUNCTION__, 'ident=' . $ident . ', value=' . $value . ' => ignore', 0);
+                        $skip = true;
                     } else {
                         $this->SetValue($ident, $value);
                     }
+                    $found = true;
+                    break;
                 }
+            }
+            if ($found) {
+                if ($skip) {
+                    $this->SendDebug(__FUNCTION__, 'skip ident=' . $ident . ', value=' . $value . ' => no value', 0);
+                } else {
+                    $this->SendDebug(__FUNCTION__, 'use ident=' . $ident . ', value=' . $value, 0);
+                }
+            } else {
+                $this->SendDebug(__FUNCTION__, 'ignore ident=' . $ident . ', value=' . $value, 0);
             }
         }
 
