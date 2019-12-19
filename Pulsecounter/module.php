@@ -122,7 +122,7 @@ class Pulsecounter extends IPSModule
     protected function GetFormElements()
     {
         $formElements = [];
-        $formElements[] = ['type' => 'Label', 'label' => 'Pulsecounter'];
+        $formElements[] = ['type' => 'Label', 'caption' => 'Pulsecounter'];
 
         $opts = [];
         $opts[] = ['caption' => $this->Translate('unused'), 'value'   => PULSECOUNTER_UNDEF];

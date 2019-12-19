@@ -1,7 +1,7 @@
 # IPSymconPulsecounter
 
 [![IPS-Version](https://img.shields.io/badge/Symcon_Version-5.0+-red.svg)](https://www.symcon.de/service/dokumentation/entwicklerbereich/sdk-tools/sdk-php/)
-![Module-Version](https://img.shields.io/badge/Modul_Version-1.1-blue.svg)
+![Module-Version](https://img.shields.io/badge/Modul_Version-1.2-blue.svg)
 ![Code](https://img.shields.io/badge/Code-PHP-blue.svg)
 [![License](https://img.shields.io/badge/License-CC%20BY--NC--SA%204.0-green.svg)](https://creativecommons.org/licenses/by-nc-sa/4.0/)
 
@@ -130,9 +130,13 @@ GUIDs
 
 ## 7. Versions-Historie
 
-- 1.1 @ 15.12.2019 11:53<br>
+- 1.2 @ 19.12.2019 14:09
+  - Anpassungen an IPS 5.3
+    - Formular-Elemente: 'label' in 'caption' geändert
+
+- 1.1 @ 15.12.2019 11:53
   - ReceiveData() umgebaut
   - mehr debug
 
-- 1.0 @ 10.12.2019 09:53<br>
-  Initiale Version
+- 1.0 @ 10.12.2019 09:53
+  - Initiale Version
