@@ -1,7 +1,7 @@
 # IPSymconPulsecounter
 
 [![IPS-Version](https://img.shields.io/badge/Symcon_Version-5.0+-red.svg)](https://www.symcon.de/service/dokumentation/entwicklerbereich/sdk-tools/sdk-php/)
-![Module-Version](https://img.shields.io/badge/Modul_Version-1.2-blue.svg)
+![Module-Version](https://img.shields.io/badge/Modul_Version-1.3-blue.svg)
 ![Code](https://img.shields.io/badge/Code-PHP-blue.svg)
 [![License](https://img.shields.io/badge/License-CC%20BY--NC--SA%204.0-green.svg)](https://creativecommons.org/licenses/by-nc-sa/4.0/)
 
@@ -129,6 +129,9 @@ GUIDs
   - Pulsecounter: `{2E598E2C-32FD-0407-3EE0-496B33854129}`
 
 ## 7. Versions-Historie
+
+- 1.3 @ 20.12.2019 13:54
+  - Fix in ReceiveData()
 
 - 1.2 @ 19.12.2019 14:09
   - Anpassungen an IPS 5.3
