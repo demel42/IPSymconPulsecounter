@@ -1,6 +1,6 @@
 # IPSymconPulsecounter
 
-[![IPS-Version](https://img.shields.io/badge/Symcon_Version-5.0+-red.svg)](https://www.symcon.de/service/dokumentation/entwicklerbereich/sdk-tools/sdk-php/)
+[![IPS-Version](https://img.shields.io/badge/Symcon_Version-5.3+-red.svg)](https://www.symcon.de/service/dokumentation/entwicklerbereich/sdk-tools/sdk-php/)
 ![Module-Version](https://img.shields.io/badge/Modul_Version-1.3-blue.svg)
 ![Code](https://img.shields.io/badge/Code-PHP-blue.svg)
 [![License](https://img.shields.io/badge/License-CC%20BY--NC--SA%204.0-green.svg)](https://creativecommons.org/licenses/by-nc-sa/4.0/)
@@ -25,8 +25,8 @@ Getestet mit der Pulsecounter-Version **34**.
 
 ## 2. Voraussetzungen
 
- - IP-Symcon ab Version 5<br>
- - eine Pulsecounter-Zählermodul
+ - IP-Symcon ab Version 5.3
+ - ein Pulsecounter-Zählermodul
 
 ## 3. Installation
 
@@ -130,7 +130,7 @@ GUIDs
 
 ## 7. Versions-Historie
 
-- 1.3 @ 20.12.2019 13:54
+- 1.3 @ 30.12.2019 10:56
   - Fix in ReceiveData()
 
 - 1.2 @ 19.12.2019 14:09

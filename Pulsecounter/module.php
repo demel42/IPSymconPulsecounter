@@ -161,13 +161,6 @@ class Pulsecounter extends IPSModule
     protected function GetFormActions()
     {
         $formActions = [];
-        if (IPS_GetKernelVersion() < 5.2) {
-            $formActions[] = [
-                'type'    => 'Button',
-                'caption' => 'Module description',
-                'onClick' => 'echo "https://github.com/demel42/IPSymconPulsecounter/blob/master/README.md";'
-            ];
-        }
 
         return $formActions;
     }
