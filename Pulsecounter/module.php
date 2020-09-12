@@ -2,27 +2,22 @@
 
 declare(strict_types=1);
 
-require_once __DIR__ . '/../libs/common.php';  // globale Funktionen
-
-if (!defined('PULSECOUNTER_UNDEF')) {
-    define('PULSECOUNTER_UNDEF', -1);
-    define('PULSECOUNTER_ELECTRICITY', 0);
-    define('PULSECOUNTER_GAS', 1);
-    define('PULSECOUNTER_WATER', 2);
-}
+require_once __DIR__ . '/../libs/common.php'; // globale Funktionen
+require_once __DIR__ . '/../libs/local.php';  // lokale Funktionen
 
 class Pulsecounter extends IPSModule
 {
-    use PulsecounterCommon;
+    use PulsecounterCommonLib;
+    use PulsecounterLocalLib;
 
     public function Create()
     {
         parent::Create();
 
-        $this->RegisterPropertyInteger('counter_1', PULSECOUNTER_UNDEF);
-        $this->RegisterPropertyInteger('counter_2', PULSECOUNTER_UNDEF);
-        $this->RegisterPropertyInteger('counter_3', PULSECOUNTER_UNDEF);
-        $this->RegisterPropertyInteger('counter_4', PULSECOUNTER_UNDEF);
+        $this->RegisterPropertyInteger('counter_1', self::$PULSECOUNTER_UNDEF);
+        $this->RegisterPropertyInteger('counter_2', self::$PULSECOUNTER_UNDEF);
+        $this->RegisterPropertyInteger('counter_3', self::$PULSECOUNTER_UNDEF);
+        $this->RegisterPropertyInteger('counter_4', self::$PULSECOUNTER_UNDEF);
 
         $this->CreateVarProfile('Pulsecounter.Wifi', VARIABLETYPE_INTEGER, ' dBm', 0, 0, 0, 0, 'Intensity');
         $this->CreateVarProfile('Pulsecounter.sec', VARIABLETYPE_INTEGER, ' s', 0, 0, 0, 0, 'Clock');
@@ -58,7 +53,7 @@ class Pulsecounter extends IPSModule
 
             $type = $this->ReadPropertyInteger('counter_' . $i);
             switch ($type) {
-                case PULSECOUNTER_ELECTRICITY:
+                case self::$PULSECOUNTER_ELECTRICITY:
                     $desc_a = 'Electric meter';
                     $prof_a = 'Pulsecounter.KWh';
                     $use_a = true;
@@ -67,7 +62,7 @@ class Pulsecounter extends IPSModule
                     $prof_b = 'Pulsecounter.KW';
                     $use_b = true;
                     break;
-                case PULSECOUNTER_GAS:
+                case self::$PULSECOUNTER_GAS:
                     $desc_a = 'Gas meter';
                     $prof_a = 'Pulsecounter.m3';
                     $use_a = true;
@@ -76,7 +71,7 @@ class Pulsecounter extends IPSModule
                     $prof_b = 'Pulsecounter.KW';
                     $use_b = true;
                     break;
-                case PULSECOUNTER_WATER:
+                case self::$PULSECOUNTER_WATER:
                     $use = true;
                     $desc_a = 'Water meter';
                     $prof_a = 'Pulsecounter.m3';
@@ -125,10 +120,10 @@ class Pulsecounter extends IPSModule
         $formElements[] = ['type' => 'Label', 'caption' => 'Pulsecounter'];
 
         $opts = [];
-        $opts[] = ['caption' => $this->Translate('unused'), 'value'   => PULSECOUNTER_UNDEF];
-        $opts[] = ['caption' => $this->Translate('Electricity'), 'value'   => PULSECOUNTER_ELECTRICITY];
-        $opts[] = ['caption' => $this->Translate('Gas'), 'value'   => PULSECOUNTER_GAS];
-        $opts[] = ['caption' => $this->Translate('Water'), 'value'   => PULSECOUNTER_WATER];
+        $opts[] = ['caption' => $this->Translate('unused'), 'value'   => self::$PULSECOUNTER_UNDEF];
+        $opts[] = ['caption' => $this->Translate('Electricity'), 'value'   => self::$PULSECOUNTER_ELECTRICITY];
+        $opts[] = ['caption' => $this->Translate('Gas'), 'value'   => self::$PULSECOUNTER_GAS];
+        $opts[] = ['caption' => $this->Translate('Water'), 'value'   => self::$PULSECOUNTER_WATER];
 
         $formElements[] = [
             'type'    => 'Select',
@@ -243,7 +238,7 @@ class Pulsecounter extends IPSModule
                 $ident_b = 'w_power_' . $i;
 
                 $type = $this->ReadPropertyInteger('counter_' . $i);
-                if ($type == PULSECOUNTER_UNDEF) {
+                if ($type == self::$PULSECOUNTER_UNDEF) {
                     continue;
                 }
 

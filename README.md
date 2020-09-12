@@ -129,8 +129,11 @@ GUIDs
 
 ## 7. Versions-Historie
 
-- 1.4 @ 13.07.2020 14:56
+- 1.4 @ 12.09.2020 11:40 (beta)
   - LICENSE.md hinzugefügt
+  - lokale Funktionen aus common.php in locale.php verlagert
+  - Traits des Moduls haben nun Postfix "Lib"
+  - define's durch statische Klassen-Variablen ersetzt
 
 - 1.3 @ 30.12.2019 10:56
   - Fix in ReceiveData()
