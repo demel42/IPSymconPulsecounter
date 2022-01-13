@@ -225,8 +225,8 @@ class Pulsecounter extends IPSModule
         foreach ($vars as $var) {
             $ident = $this->GetArrayElem($var, 'homematic_name', '');
 
-            // Unterschied bei Firmware alt: w_counter_1 neu: w_counter1
-            $ident = preg_replace('/w_(counter|value)(\d+)/i', 'w_${1}_${2}', $ident);
+            // Unterschied bei Firmware (Bsp) alt: w_counter_1 neu: w_counter1
+            $ident = preg_replace('/w_(counter|power)(\d+)/i', 'w_${1}_${2}', $ident);
 
             $value = $this->GetArrayElem($var, 'value', '');
 

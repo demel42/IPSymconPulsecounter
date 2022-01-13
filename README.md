@@ -129,7 +129,7 @@ GUIDs
 
 ## 7. Versions-Historie
 
-- 1.6 @ 13.01.2022 10:44 (beta)
+- 1.6.1 @ 13.01.2022 15:51 (beta)
   - Änderung in neuer Pulscounter-Firmware abgefangen
   - Anzeige der Modul/Bibliotheks-Informationen
 
