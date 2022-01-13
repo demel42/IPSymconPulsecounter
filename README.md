@@ -129,6 +129,10 @@ GUIDs
 
 ## 7. Versions-Historie
 
+- 1.6 @ 13.01.2022 10:44 (beta)
+  - Unterschied bei neuer Firmware abgefangen (w_counter_1 heしsst nun w_counter1)
+  - Anzeige der Modul/Bibliotheks-Informationen
+
 - 1.5 @ 18.12.2020 14:57
   - PHP_CS_FIXER_IGNORE_ENV=1 in github/workflows/style.yml eingefügt
 
