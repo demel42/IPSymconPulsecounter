@@ -3,16 +3,19 @@
 		"de": {
 			"Pulsecounter": "Pulsecounter",
 
+			"__elements__": "",
 			"Counter 1": "Zähler 1",
 			"Counter 2": "Zähler 2",
 			"Counter 3": "Zähler 3",
 			"Counter 4": "Zähler 4",
 
+			"__options__": "counter_?",
 			"unused": "unbenutzt",
 			"Electricity": "Strom",
 			"Gas": "Gas",
 			"Water": "Wasser",
 
+			"__variables__": "",
 			"Electric meter": "Stromzähler",
 			"Electricity usage": "Stromverbrauch",
 			"Gas meter": "Gaszähler",
@@ -25,11 +28,7 @@
 			"wifi-signal": "Wifi-Signal",
 			"Last update": "letzte Aktualisierung",
 
-			"Instance getting created": "Instanz wird erstellt",
-			"Instance is active": "Instanz ist aktiv",
-			"Instance is deleted": "Instanz wird gelöscht",
-			"Instance is inactive": "Instanz ist inaktiv",
-			"Instance is not created": "Instanz wurde nicht erzeugt"
+			"__end__": ""
 		}
 	}
 }

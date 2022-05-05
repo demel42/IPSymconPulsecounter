@@ -2,13 +2,22 @@
 
 declare(strict_types=1);
 
-require_once __DIR__ . '/../libs/common.php'; // globale Funktionen
-require_once __DIR__ . '/../libs/local.php';  // lokale Funktionen
+require_once __DIR__ . '/../libs/common.php';
+require_once __DIR__ . '/../libs/local.php';
 
 class Pulsecounter extends IPSModule
 {
-    use PulsecounterCommonLib;
+    use Pulsecounter\StubsCommonLib;
     use PulsecounterLocalLib;
+
+    private $ModuleDir;
+
+    public function __construct(string $InstanceID)
+    {
+        parent::__construct($InstanceID);
+
+        $this->ModuleDir = __DIR__;
+    }
 
     public function Create()
     {
@@ -19,13 +28,9 @@ class Pulsecounter extends IPSModule
         $this->RegisterPropertyInteger('counter_3', self::$PULSECOUNTER_UNDEF);
         $this->RegisterPropertyInteger('counter_4', self::$PULSECOUNTER_UNDEF);
 
-        $this->CreateVarProfile('Pulsecounter.Wifi', VARIABLETYPE_INTEGER, ' dBm', 0, 0, 0, 0, 'Intensity');
-        $this->CreateVarProfile('Pulsecounter.sec', VARIABLETYPE_INTEGER, ' s', 0, 0, 0, 0, 'Clock');
+        $this->RegisterAttributeString('UpdateInfo', '');
 
-        $this->CreateVarProfile('Pulsecounter.KWh', VARIABLETYPE_FLOAT, ' KWh', 0, 0, 0, 1, '');
-        $this->CreateVarProfile('Pulsecounter.KW', VARIABLETYPE_FLOAT, ' KW', 0, 0, 0, 1, '');
-        $this->CreateVarProfile('Pulsecounter.m3', VARIABLETYPE_FLOAT, ' m3', 0, 0, 0, 1, '');
-        $this->CreateVarProfile('Pulsecounter.m3_h', VARIABLETYPE_FLOAT, ' m3/h', 0, 0, 0, 1, '');
+        $this->InstallVarProfiles(false);
 
         $this->RequireParent('{8062CF2B-600E-41D6-AD4B-1BA66C32D6ED}');
     }
@@ -34,7 +39,22 @@ class Pulsecounter extends IPSModule
     {
         parent::ApplyChanges();
 
-        $status = IS_ACTIVE;
+        $this->MaintainReferences();
+
+        if ($this->CheckPrerequisites() != false) {
+            $this->SetStatus(self::$IS_INVALIDPREREQUISITES);
+            return;
+        }
+
+        if ($this->CheckUpdate() != false) {
+            $this->SetStatus(self::$IS_UPDATEUNCOMPLETED);
+            return;
+        }
+
+        if ($this->CheckConfiguration() != false) {
+            $this->SetStatus(self::$IS_INVALIDCONFIG);
+            return;
+        }
 
         $vpos = 1;
 
@@ -95,43 +115,59 @@ class Pulsecounter extends IPSModule
         $this->MaintainVariable('Uptime', $this->Translate('Uptime'), VARIABLETYPE_INTEGER, 'Pulsecounter.sec', $vpos++, true);
         $this->MaintainVariable('WifiStrength', $this->Translate('wifi-signal'), VARIABLETYPE_INTEGER, 'Pulsecounter.Wifi', $vpos++, true);
 
-        $this->SetStatus($status);
+        $this->SetStatus(IS_ACTIVE);
     }
 
     protected function GetFormElements()
     {
-        $formElements = [];
-        $formElements[] = ['type' => 'Label', 'caption' => 'Pulsecounter'];
+        $formElements = $this->GetCommonFormElements('Pulsecounter');
 
-        $opts = [];
-        $opts[] = ['caption' => $this->Translate('unused'), 'value'   => self::$PULSECOUNTER_UNDEF];
-        $opts[] = ['caption' => $this->Translate('Electricity'), 'value'   => self::$PULSECOUNTER_ELECTRICITY];
-        $opts[] = ['caption' => $this->Translate('Gas'), 'value'   => self::$PULSECOUNTER_GAS];
-        $opts[] = ['caption' => $this->Translate('Water'), 'value'   => self::$PULSECOUNTER_WATER];
+        if ($this->GetStatus() == self::$IS_UPDATEUNCOMPLETED) {
+            return $formElements;
+        }
+
+        $opts = [
+            [
+                'caption' => $this->Translate('unused'),
+                'value'   => self::$PULSECOUNTER_UNDEF,
+            ],
+            [
+                'caption' => $this->Translate('Electricity'),
+                'value'   => self::$PULSECOUNTER_ELECTRICITY,
+            ],
+            [
+                'caption' => $this->Translate('Gas'),
+                'value'   => self::$PULSECOUNTER_GAS,
+            ],
+            [
+                'caption' => $this->Translate('Water'),
+                'value'   => self::$PULSECOUNTER_WATER,
+            ],
+        ];
 
         $formElements[] = [
             'type'    => 'Select',
+            'options' => $opts,
             'name'    => 'counter_1',
             'caption' => 'Counter 1',
-            'options' => $opts
         ];
         $formElements[] = [
             'type'    => 'Select',
+            'options' => $opts,
             'name'    => 'counter_2',
             'caption' => 'Counter 2',
-            'options' => $opts
         ];
         $formElements[] = [
             'type'    => 'Select',
+            'options' => $opts,
             'name'    => 'counter_3',
             'caption' => 'Counter 3',
-            'options' => $opts
         ];
         $formElements[] = [
             'type'    => 'Select',
+            'options' => $opts,
             'name'    => 'counter_4',
             'caption' => 'Counter 4',
-            'options' => $opts
         ];
 
         return $formElements;
@@ -141,18 +177,31 @@ class Pulsecounter extends IPSModule
     {
         $formActions = [];
 
-        $formActions[] = [
-            'type'    => 'ExpansionPanel',
-            'caption' => 'Information',
-            'items'   => [
-                [
-                    'type'    => 'Label',
-                    'caption' => $this->InstanceInfo($this->InstanceID),
-                ],
-            ],
-        ];
+        if ($this->GetStatus() == self::$IS_UPDATEUNCOMPLETED) {
+            $formActions[] = $this->GetCompleteUpdateFormAction();
+
+            $formActions[] = $this->GetInformationFormAction();
+            $formActions[] = $this->GetReferencesFormAction();
+
+            return $formActions;
+        }
+
+        $formActions[] = $this->GetInformationFormAction();
+        $formActions[] = $this->GetReferencesFormAction();
 
         return $formActions;
+    }
+
+    public function RequestAction($ident, $value)
+    {
+        if ($this->CommonRequestAction($ident, $value)) {
+            return;
+        }
+        switch ($ident) {
+            default:
+                $this->SendDebug(__FUNCTION__, 'invalid ident ' . $ident, 0);
+                break;
+        }
     }
 
     public function ReceiveData($msg)

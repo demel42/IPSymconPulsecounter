@@ -4,9 +4,9 @@
 	"name": "Pulsecounter",
 	"url": "https://github.com/demel42/IPSymconPulsecounter",
 	"compatibility": {
-		"version": "5.3"
+		"version": "6.0"
 	},
-	"version": "1.6.1",
+	"version": "1.7",
 	"build": 0,
-	"date": 1642085504
+	"date": 1651738933
 }

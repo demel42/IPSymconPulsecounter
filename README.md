@@ -1,6 +1,6 @@
 # IPSymconPulsecounter
 
-[![IPS-Version](https://img.shields.io/badge/Symcon_Version-5.3+-red.svg)](https://www.symcon.de/service/dokumentation/entwicklerbereich/sdk-tools/sdk-php/)
+[![IPS-Version](https://img.shields.io/badge/Symcon_Version-6.0+-red.svg)](https://www.symcon.de/service/dokumentation/entwicklerbereich/sdk-tools/sdk-php/)
 ![Code](https://img.shields.io/badge/Code-PHP-blue.svg)
 [![License](https://img.shields.io/badge/License-CC%20BY--NC--SA%204.0-green.svg)](https://creativecommons.org/licenses/by-nc-sa/4.0/)
 
@@ -24,7 +24,7 @@ Getestet mit der Pulsecounter-Version **34**.
 
 ## 2. Voraussetzungen
 
- - IP-Symcon ab Version 5.3
+ - IP-Symcon ab Version 6.0
  - ein Pulsecounter-Zählermodul
 
 ## 3. Installation
@@ -115,10 +115,14 @@ Falls man die Werte archivieren möchte, ist sinnvollerweise die _Aggregation_ a
 
 Es werden folgende Variablenprofile angelegt:
 * Integer<br>
-Pulsecounter.Wifi, Pulsecounter.sec
+Pulsecounter.sec,
+Pulsecounter.Wifi
 
 * Float<br>
-Pulsecounter.KWh, Pulsecounter.KW, Pulsecounter.m3, Pulsecounter.m3_h
+Pulsecounter.KW,
+Pulsecounter.KWh,
+Pulsecounter.m3,
+Pulsecounter.m3_h
 
 ## 6. Anhang
 
@@ -128,6 +132,13 @@ GUIDs
   - Pulsecounter: `{2E598E2C-32FD-0407-3EE0-496B33854129}`
 
 ## 7. Versions-Historie
+
+- 1.7 @ 05.05.2022 10:22
+  - IPS-Version ist nun minimal 6.0
+  - Anzeige der Modul/Bibliotheks-Informationen, Referenzen und Timer
+  - Implememtierung einer Update-Logik
+  - Überlagerung von Translate und Aufteilung von locale.json in 3 translation.json (Modul, libs und CommonStubs)
+  - diverse interne Änderungen
 
 - 1.6.1 @ 13.01.2022 15:51
   - Änderung in neuer Pulscounter-Firmware abgefangen
