@@ -118,7 +118,7 @@ class Pulsecounter extends IPSModule
         $this->SetStatus(IS_ACTIVE);
     }
 
-    protected function GetFormElements()
+    private function GetFormElements()
     {
         $formElements = $this->GetCommonFormElements('Pulsecounter');
 
@@ -173,7 +173,7 @@ class Pulsecounter extends IPSModule
         return $formElements;
     }
 
-    protected function GetFormActions()
+    private function GetFormActions()
     {
         $formActions = [];
 
@@ -191,11 +191,7 @@ class Pulsecounter extends IPSModule
             'caption'   => 'Expert area',
             'expanded ' => false,
             'items'     => [
-                [
-                    'type'    => 'Button',
-                    'caption' => 'Re-install variable-profiles',
-                    'onClick' => $this->GetModulePrefix() . '_InstallVarProfiles($id, true);'
-                ],
+                $this->GetInstallVarProfilesFormItem(),
             ],
         ];
 

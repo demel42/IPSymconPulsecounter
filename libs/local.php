@@ -34,7 +34,7 @@ trait PulsecounterLocalLib
     public static $PULSECOUNTER_GAS = 1;
     public static $PULSECOUNTER_WATER = 2;
 
-    public function InstallVarProfiles(bool $reInstall = false)
+    private function InstallVarProfiles(bool $reInstall = false)
     {
         if ($reInstall) {
             $this->SendDebug(__FUNCTION__, 'reInstall=' . $this->bool2str($reInstall), 0);
