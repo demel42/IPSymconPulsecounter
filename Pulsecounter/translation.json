@@ -8,6 +8,7 @@
 			"Counter 2": "Zähler 2",
 			"Counter 3": "Zähler 3",
 			"Counter 4": "Zähler 4",
+			"Gas condensing value": "Gas-Brennwert",
 
 			"__options__": "counter_?",
 			"unused": "unbenutzt",
@@ -20,6 +21,7 @@
 			"Electricity usage": "Stromverbrauch",
 			"Gas meter": "Gaszähler",
 			"Gas consumption": "Gasverbrauch",
+			"Gas energy": "Gasenergie",
 			"Water meter": "Wasserzähler",
 			"Water consumption": "Wasserverbrauch",
 
@@ -27,6 +29,12 @@
 			"Uptime": "Uptime",
 			"wifi-signal": "Wifi-Signal",
 			"Last update": "letzte Aktualisierung",
+
+			"__action__": "RecalcGasEnergy",
+			"(Re-)build archive-data for \"gas energie\" from \"gas counter\"":
+				"(Neu-)Aufbau von Archivdaten für \"Gasenergie\" aus \"Gaszähler\"",
+			"This clears the values of \"gas energy\" and re-creates them new from \"gas counter\" and \"Gas condensing value\"":
+				"Dies löscht die Werte von \"Gasenergie\" und erstellt sie neu aus \"Gaszähler\" und \"Gas-Brennwert\"",
 
 			"__end__": ""
 		}

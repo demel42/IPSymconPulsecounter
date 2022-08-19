@@ -133,6 +133,11 @@ GUIDs
 
 ## 7. Versions-Historie
 
+- 1.10 @ 18.08.2022 12:15
+  - Möglichkeit der Eingabe des Gas-Brennwerts und basierend darauf die Berechnung der "Gasenergie"
+  - Funktion zum Neu-Aufbau des Archivs der "Gasenergie" aus dem "Gaszähler"
+  - update submodule CommonStubs
+
 - 1.9 @ 05.07.2022 15:40
   - Verbesserung: IPS-Status wird nur noch gesetzt, wenn er sich ändert
 
