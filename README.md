@@ -133,6 +133,10 @@ GUIDs
 
 ## 7. Versions-Historie
 
+- 1.10.1 @ 07.10.2022 13:59
+  - update submodule CommonStubs
+    Fix: Update-Prüfung wieder funktionsfähig
+
 - 1.10 @ 18.08.2022 12:15
   - Möglichkeit der Eingabe des Gas-Brennwerts und basierend darauf die Berechnung der "Gasenergie"
   - Funktion zum Neu-Aufbau des Archivs der "Gasenergie" aus dem "Gaszähler"
