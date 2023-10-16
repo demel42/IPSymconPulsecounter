@@ -10,13 +10,16 @@ class Pulsecounter extends IPSModule
     use Pulsecounter\StubsCommonLib;
     use PulsecounterLocalLib;
 
-    private $ModuleDir;
-
     public function __construct(string $InstanceID)
     {
         parent::__construct($InstanceID);
 
-        $this->ModuleDir = __DIR__;
+        $this->CommonContruct(__DIR__);
+    }
+
+    public function __destruct()
+    {
+        $this->CommonDestruct();
     }
 
     public function Create()
@@ -30,7 +33,8 @@ class Pulsecounter extends IPSModule
 
         $this->RegisterPropertyFloat('condensing_value', 0);
 
-        $this->RegisterAttributeString('UpdateInfo', '');
+        $this->RegisterAttributeString('UpdateInfo', json_encode([]));
+        $this->RegisterAttributeString('ModuleStats', json_encode([]));
 
         $this->InstallVarProfiles(false);
 
