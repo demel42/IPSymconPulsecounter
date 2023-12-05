@@ -43,8 +43,8 @@ trait PulsecounterLocalLib
         $this->CreateVarProfile('Pulsecounter.Wifi', VARIABLETYPE_INTEGER, ' dBm', 0, 0, 0, 0, 'Intensity', [], $reInstall);
         $this->CreateVarProfile('Pulsecounter.sec', VARIABLETYPE_INTEGER, ' s', 0, 0, 0, 0, 'Clock', [], $reInstall);
 
-        $this->CreateVarProfile('Pulsecounter.KWh', VARIABLETYPE_FLOAT, ' KWh', 0, 0, 0, 1, '', [], $reInstall);
-        $this->CreateVarProfile('Pulsecounter.KW', VARIABLETYPE_FLOAT, ' KW', 0, 0, 0, 1, '', [], $reInstall);
+        $this->CreateVarProfile('Pulsecounter.kWh', VARIABLETYPE_FLOAT, ' kWh', 0, 0, 0, 1, '', [], $reInstall);
+        $this->CreateVarProfile('Pulsecounter.kW', VARIABLETYPE_FLOAT, ' kW', 0, 0, 0, 1, '', [], $reInstall);
         $this->CreateVarProfile('Pulsecounter.m3_h', VARIABLETYPE_FLOAT, ' m3/h', 0, 0, 0, 1, '', [], $reInstall);
         $this->CreateVarProfile('Pulsecounter.m3', VARIABLETYPE_FLOAT, ' m3', 0, 0, 0, 1, '', [], $reInstall);
     }

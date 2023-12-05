@@ -119,8 +119,8 @@ Pulsecounter.sec,
 Pulsecounter.Wifi
 
 * Float<br>
-Pulsecounter.KW,
-Pulsecounter.KWh,
+Pulsecounter.kW,
+Pulsecounter.kWh,
 Pulsecounter.m3,
 Pulsecounter.m3_h
 
@@ -132,6 +132,9 @@ GUIDs
   - Pulsecounter: `{2E598E2C-32FD-0407-3EE0-496B33854129}`
 
 ## 7. Versions-Historie
+
+- 1.13 @ 05.12.2023 15:09
+  - Fix: fehlerhafte Variablenprofile korrigiert
 
 - 1.12 @ 03.11.2023 11:06
   - Neu: Ermittlung von Speicherbedarf und Laufzeit (aktuell und für 31 Tage) und Anzeige im Panel "Information"

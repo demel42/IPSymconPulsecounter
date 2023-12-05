@@ -41,6 +41,32 @@ class Pulsecounter extends IPSModule
         $this->RequireParent('{8062CF2B-600E-41D6-AD4B-1BA66C32D6ED}');
     }
 
+    private function CheckModuleUpdate(array $oldInfo, array $newInfo)
+    {
+        $r = [];
+
+        if ($this->version2num($oldInfo) < $this->version2num('1.13')) {
+            $r[] = $this->Translate('Replace variableprofiles \'Pulsecounter.KWh\' by \'Pulsecounter.kWh\' and \'Pulsecounter.KW\' by \'Pulsecounter.kW\'');
+        }
+
+        return $r;
+    }
+
+    private function CompleteModuleUpdate(array $oldInfo, array $newInfo)
+    {
+        if ($this->version2num($oldInfo) < $this->version2num('1.13')) {
+            if (IPS_VariableProfileExists('Pulsecounter.KWh')) {
+                IPS_DeleteVariableProfile('Pulsecounter.KWh');
+            }
+            if (IPS_VariableProfileExists('Pulsecounter.KW')) {
+                IPS_DeleteVariableProfile('Pulsecounter.KW');
+            }
+            $this->InstallVarProfiles(false);
+        }
+
+        return '';
+    }
+
     public function ApplyChanges()
     {
         parent::ApplyChanges();
@@ -86,11 +112,11 @@ class Pulsecounter extends IPSModule
             switch ($type) {
                 case self::$PULSECOUNTER_ELECTRICITY:
                     $desc_a = 'Electric meter';
-                    $prof_a = 'Pulsecounter.KWh';
+                    $prof_a = 'Pulsecounter.kWh';
                     $use_a = true;
 
                     $desc_b = 'Electricity usage';
-                    $prof_b = 'Pulsecounter.KW';
+                    $prof_b = 'Pulsecounter.kW';
                     $use_b = true;
                     break;
                 case self::$PULSECOUNTER_GAS:
@@ -99,12 +125,12 @@ class Pulsecounter extends IPSModule
                     $use_a = true;
 
                     $desc_b = 'Gas consumption';
-                    $prof_b = 'Pulsecounter.KW';
+                    $prof_b = 'Pulsecounter.kW';
                     $use_b = true;
 
                     if ($condensing_value > 0) {
                         $desc_c = 'Gas energy';
-                        $prof_c = 'Pulsecounter.KWh';
+                        $prof_c = 'Pulsecounter.kWh';
                         $use_c = true;
                     }
                     break;

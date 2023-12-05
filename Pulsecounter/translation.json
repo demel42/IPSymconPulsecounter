@@ -3,6 +3,10 @@
 		"de": {
 			"Pulsecounter": "Pulsecounter",
 
+			"__function__": "CheckModuleUpdate",
+			"Replace variableprofiles 'Pulsecounter.KWh' by 'Pulsecounter.kWh' and 'Pulsecounter.KW' by 'Pulsecounter.kW'":
+				"Die Variablenprofile 'Pulsecounter.KWh' durch 'Pulsecounter.kWh' und 'Pulsecounter.KW' durch 'Pulsecounter.kW' ersetzen",
+
 			"__elements__": "",
 			"Counter 1": "Zähler 1",
 			"Counter 2": "Zähler 2",
