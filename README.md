@@ -133,6 +133,10 @@ GUIDs
 
 ## 7. Versions-Historie
 
+- 1.14 @ 06.02.2024 09:46
+  - Verbesserung: Angleichung interner Bibliotheken anlässlich IPS 7
+  - update submodule CommonStubs
+
 - 1.13 @ 05.12.2023 15:09
   - Fix: fehlerhafte Variablenprofile korrigiert
 
