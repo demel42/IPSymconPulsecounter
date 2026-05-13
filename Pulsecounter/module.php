@@ -407,7 +407,7 @@ class Pulsecounter extends IPSModule
 
     private function RecalcGasEnergy()
     {
-        $archivID = IPS_GetInstanceListByModuleID('{43192F0B-135B-4CE7-A0A7-1475603F3060}')[0];
+        $archivID = (array) IPS_GetInstanceListByModuleID('{43192F0B-135B-4CE7-A0A7-1475603F3060}')[0];
         $avars = AC_GetAggregationVariables($archivID, false);
 
         $condensing_value = $this->ReadPropertyFloat('condensing_value');
@@ -475,7 +475,7 @@ class Pulsecounter extends IPSModule
             for ($start = $firstTime; $start < $lastTime; $start = $end + 1) {
                 $end = $start + (24 * 60 * 60 * 30) - 1;
 
-                $src_val = AC_GetLoggedValues($archivID, $varID_src, $start, $end, 0);
+                $src_val = (array) AC_GetLoggedValues($archivID, $varID_src, $start, $end, 0);
                 foreach ($src_val as $val) {
                     $dst_val[] = [
                         'TimeStamp' => $val['TimeStamp'],
