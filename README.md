@@ -134,7 +134,7 @@ GUIDs
 ## 7. Versions-Historie
 
 - 1.17.1 @ 21.05.2026 17:14
-  - Fix: Korrektur zu 2.18 (fehlerhafter Type-Cast)
+  - Fix: Korrektur zu 1.17 (fehlerhafter Type-Cast)
 
 - 1.17 @ 11.05.2026 15:02
   - Fix: Änderung von deprecated php code
